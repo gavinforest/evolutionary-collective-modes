@@ -8,4 +8,4 @@ Run `toynet_run_simulation.ipynb` in the `evcm_env.yaml` environment in the same
 
 # Analyzing a simulation.
 
-`toynet_simulation_analysis.ipynb` generates most of Figure 2, which analyzes the results of simulation of the toy metabolic network. Again, run this notebook in the `evcm_env.yaml` environment in the same directory as `evcm` 
+`toynet_simulation_analysis.ipynb` generates most of Figure 2, which analyzes the results of simulation of the toy metabolic network. Again, run this notebook in the `evcm_env.yaml` environment in the same directory as `evcm`.
