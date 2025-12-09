@@ -3,7 +3,7 @@ import numpy as np
 import polars as pl
 import os
 from sklearn.linear_model import LinearRegression
-from cmsim_biggmatrices_double_total import cmsim_biggmatrices_double
+from evcm.biggmatrices import cmsim_biggmatrices_double
 import cobra
 
 # ************************************************

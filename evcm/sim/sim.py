@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from cmsim_util_sim import fixed_start, fixednoisy_start, random_start, sample_flux_p, random_fixation,\
+from evcm.utils import fixed_start, fixednoisy_start, random_start, sample_flux_p, random_fixation,\
  nearest_feasible_gene, mutate_bounds, selective_pressure_flux, selective_pressure_gene,\
  FBA_gene, selective_pressure_FBA_flux, selective_pressure_FBA_gene, biological_start
 import warnings
@@ -21,15 +21,15 @@ __count__ = 'c'
 
 def run_sim(T,Au,Al,S,Gu,Gl,beta,
             pop_size=1000,
-            fix_start = 'f',
+            fix_start = 'n',
             heritability_std=0.1,mutate_scale=0.1,simulation_scale=1,
             expected_mutations=1,expected_wiggles=1,
             uimmutable=[],limmutable=[],irreversible=False,
             do_print=True,
-            do_SP_flux=True,do_SP_gene=True,
+            do_SP_flux=False,do_SP_gene=False,
             converged_break=False,
             penalty="n",pen_power=1.05,alpha=0.1,
-            fba_move=False,
+            fba_move=True,
             sample_rate=10,SP_rate=100,print_rate=10000,
             u_ccomp=None,l_ccomp=None,u_gcomp=None,l_gcomp=None,
             Sigmau=None,Sigmal=None,
@@ -37,7 +37,7 @@ def run_sim(T,Au,Al,S,Gu,Gl,beta,
             ucComparison_labels=None,lcComparison_labels=None,
             ugComparison_labels=None,lgComparison_labels=None,
             u_g0=None,l_g0=None,v0=None,
-            mutation_data='f'):
+            mutation_data='c'):
 
 
     # T: int of number of epochs to simulate
@@ -46,10 +46,13 @@ def run_sim(T,Au,Al,S,Gu,Gl,beta,
     # pop_size: the population size (N)
     
     # fix_start: boolean that sets if a fixed, fixed noisy, or random start should be used
+        #fixed - all bounds are set to the simulation scale
+        #fixed noisy - all bounds are set to the simulation scale + a small amount of noise (described in supplement)
+        #random - all bounds are set randomly
     
-    # heritability_std: spread of heritability "wiggles" (int)
-    # mutate_scale: spread of mutation fitness effects (int)
-    # simulation_scale: sets the overall scale of the simulation (how large are bounds) (int)
+    # heritability_std: spread of heritability "wiggles" (float)
+    # mutate_scale: spread of mutation fitness effects (float)
+    # simulation_scale: sets the overall scale of the simulation (how large are bounds) (float)
     
     # expected_mutations: int of number of mutations expected in a generation
     # expected_wiggles: int of number of constraints that will be changes between generations
