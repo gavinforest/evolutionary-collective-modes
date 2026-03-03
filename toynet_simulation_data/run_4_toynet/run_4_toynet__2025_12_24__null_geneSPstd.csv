@@ -1,0 +1,9 @@
+Sim,Gene,Selective Pressure std,Selective Pressure mean
+run_4_toynet,0___u,0.49178012409675403,0.5902928194143612
+run_4_toynet,1___u,0.49178012409675403,0.4097071805856388
+run_4_toynet,2___u,0.40186591296049956,0.20250359499281
+run_4_toynet,3___u,0.40530308196561254,0.2072035855928288
+run_4_toynet,0___l,0.0,0.0
+run_4_toynet,1___l,0.0,0.0
+run_4_toynet,2___l,0.0,0.0
+run_4_toynet,3___l,0.0,0.0

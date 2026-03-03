@@ -1021,8 +1021,8 @@ def calculate_flux_direction_variability(flux,ds,num_offset):
     return flux.select(pl.all().gather_every(ds,offset=num_offset*ds).over('Reaction','Sim',mapping_strategy='explode')).\
         with_columns((pl.col('Flux').diff()).over('Reaction','Sim')).drop_nulls().\
         with_columns((pl.col('Flux')/((pl.col('Flux')**2).sum().sqrt())).over('Time','Sim')).\
-        group_by(['Reaction','Sim'],maintain_order=True).agg(pl.col('Flux').std()/pl.col('Flux').mean())
-
+        group_by(['Reaction','Sim'],maintain_order=True).agg(pl.col('Flux').std()/pl.col('Flux').mean()).with_columns(pl.col('Flux').fill_nan(0))
+        #A reaction can have a mean of 0 which leads to nan, so fill it with 0
                                          
 
 def compare_direction_variability(flux,ubound,lbound,mats,ds,num_offset,t0_dir=None,tf_dir=None):

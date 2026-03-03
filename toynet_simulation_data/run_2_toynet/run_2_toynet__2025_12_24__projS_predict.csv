@@ -1,0 +1,5 @@
+Sim,Reaction,Prediction - Flux
+run_2_toynet,0,1.0
+run_2_toynet,1,0.666666666666667
+run_2_toynet,2,0.3333333333333334
+run_2_toynet,3,0.3333333333333334

@@ -46,13 +46,10 @@ def run_sim(T,Au,Al,S,Gu,Gl,beta,
     # pop_size: the population size (N)
     
     # fix_start: boolean that sets if a fixed, fixed noisy, or random start should be used
-        #fixed - all bounds are set to the simulation scale
-        #fixed noisy - all bounds are set to the simulation scale + a small amount of noise (described in supplement)
-        #random - all bounds are set randomly
     
-    # heritability_std: spread of heritability "wiggles" (float)
-    # mutate_scale: spread of mutation fitness effects (float)
-    # simulation_scale: sets the overall scale of the simulation (how large are bounds) (float)
+    # heritability_std: spread of heritability "wiggles" (int)
+    # mutate_scale: spread of mutation fitness effects (int)
+    # simulation_scale: sets the overall scale of the simulation (how large are bounds) (int)
     
     # expected_mutations: int of number of mutations expected in a generation
     # expected_wiggles: int of number of constraints that will be changes between generations

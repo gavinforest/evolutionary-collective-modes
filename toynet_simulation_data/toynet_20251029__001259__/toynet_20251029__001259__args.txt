@@ -1,1 +1,0 @@
-Namespace(dir='toynet_3211_scc/', mats='toynet.npz', c=None, g=None, gp=1, Sigmarand=False, noimm=False, T=5000001, N=10000000, start='n', hs=0.1, ms=0.1, ss=1, em=1, ew=1, irr=False, SPf=False, SPg=False, cb=False, pen='n', pp=1.05, a=0.1, samr=10, SPr=100, printr=10000, fba=True, mutdata='c')
