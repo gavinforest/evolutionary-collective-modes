@@ -1,0 +1,19 @@
+name: evcm_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - cobra
+  - cvxpy
+  - matplotlib
+  - numpy
+  - pandas
+  - polars
+  - python
+  - qpsolvers
+  - scikit-learn
+  - scipy
+  - seaborn
+  - sympy
+  - jupyterlab
+  - pyarrow
