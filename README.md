@@ -1,6 +1,6 @@
 # Evolutionary Collective Modes
 
-This is a repository for our manuscript TITLE TITLE TITLE.
+This is a repository for our manuscript "From genes to collective modes: biological constraints shape metabolic evolution."
 
 # Running a simulation.
 
