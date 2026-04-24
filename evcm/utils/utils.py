@@ -101,7 +101,7 @@ def random_network_biomass_beta(m,r,n_import=1,n_export=1,z_max=4,nu_max=2,bioma
                 S[ri[1],i] = np.random.randint(1,nu_max)
                 
                 for j in ri[2:]: #Everything else is either consumed or produced
-                    S[j,i] = np.random.choice([1,-1],1)*np.random.randint(1,nu_max)
+                    S[j,i] = (np.random.choice([1,-1],1)*np.random.randint(1,nu_max))[0]
                     
     
         
@@ -149,7 +149,7 @@ def random_network_biomass_beta(m,r,n_import=1,n_export=1,z_max=4,nu_max=2,bioma
                 S[ri[1],i] = np.random.randint(1,nu_max)
                 
                 for j in ri[2:]: #Everything else is either consumed or produced
-                    S[j,i] = np.random.choice([1,-1],1)*np.random.randint(1,nu_max)
+                    S[j,i] = (np.random.choice([1,-1],1)*np.random.randint(1,nu_max))[0]
                     
                     
                     
@@ -165,7 +165,7 @@ def random_network_biomass_beta(m,r,n_import=1,n_export=1,z_max=4,nu_max=2,bioma
             S[ri[1],i] = np.random.randint(1,nu_max)
             
             for j in ri[2:]: #Everything else is either consumed or produced
-                S[j,i] = np.random.choice([1,-1],1)*np.random.randint(1,nu_max)
+                S[j,i] = (np.random.choice([1,-1],1)*np.random.randint(1,nu_max))[0]
             
             
         #Make the biomass reaction
