@@ -3,7 +3,6 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - cobra
   - cvxpy
   - matplotlib
   - numpy
@@ -17,3 +16,6 @@ dependencies:
   - sympy
   - jupyterlab
   - pyarrow
+  - pip
+  - pip:
+      - cobra
