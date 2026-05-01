@@ -16,7 +16,8 @@ dependencies = [
   "seaborn",
   "sympy",
   "jupyterlab",
-  "pyarrow",
+  "pyarrow>=14",
   "cobra",
   "marimo",
-  ]
+  "ruff>=0.15.12",
+]
