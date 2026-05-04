@@ -19,5 +19,14 @@ dependencies = [
   "pyarrow>=14",
   "cobra",
   "marimo",
-  "ruff>=0.15.12",
+  "gurobipy>=13.0.1",
+]
+
+[dependency-groups]
+dev = [
+    "line-profiler-gui>=0.2",
+    "ruff>=0.15.12",
+    "snakeviz>=2.2.2",
+    "line-profiler",
+    "pyqt5>=5.15.11",
 ]
