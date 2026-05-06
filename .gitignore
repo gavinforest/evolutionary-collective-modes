@@ -1,3 +1,5 @@
 **/__pycache__/
 **/.ipynb_checkpoints
 **/__marimo__/
+**/.DS_Store
+profiles/**

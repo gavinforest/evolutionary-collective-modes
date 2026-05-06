@@ -276,6 +276,7 @@ def run_sim(
     df_optimal_biomass = {"Time": [], "Biomass": []}
     df_ubounds = {"Time": [], "Bound": [], "Gene": []}
     df_lbounds = {"Time": [], "Bound": [], "Gene": []}
+    df_selective_coefficients = {"Time": [], "selective_coefficient": []}
 
     # Selective pressures
     df_ucSP_fba = {"Time": [], "Vector": [], "Selective Pressure": []}
@@ -338,6 +339,9 @@ def run_sim(
         new_biomass = fitness(new_flux, new_u_g, new_l_g)
         selective_coeff = new_biomass - biomass
         prob_fix = random_fixation(selective_coeff, pop_size)
+
+        df_selective_coefficients["Time"].append(T)
+        df_selective_coefficients["selective_coefficient"].append(selective_coeff)
 
         # %%% Fixation
         if (new_biomass >= 0) and (np.random.random() < prob_fix):
@@ -405,13 +409,14 @@ def run_sim(
         # %%% Print results
         if (t % print_rate == 0) and do_print:
             print(
-                t,
-                np.round(biomass, 3),
-                # np.round(flux, 2),
-                # np.round(u_g, 2),
-                # np.round(l_g, 2),
-                umutation_count,
-                lmutation_count,
+                f"T = {t}",
+                f"\tbiomass: {np.round(biomass, 3)}",
+                f"\tflux:  {np.round(flux, 2)}",
+                f"\tu_g: {np.round(u_g, 2)}",
+                f"\tl_g: {np.round(l_g, 2)}",
+                f"\tumutation_count: {umutation_count}",
+                f"\tlmutation_count: {lmutation_count}",
+                sep="\n",
             )
 
         # %%% Calculate selective pressure
@@ -507,6 +512,7 @@ def run_sim(
         pd.DataFrame(df_umutation),
         pd.DataFrame(df_lmutation),
         pd.DataFrame(df_neutral),
+        pd.DataFrame(df_selective_coefficients),
         pd.DataFrame(df_ucSP_fba),
         pd.DataFrame(df_lcSP_fba),
         pd.DataFrame(df_ugSP_fba),

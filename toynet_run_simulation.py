@@ -63,6 +63,9 @@ def _(np):
     Gl = toy_mats["Gl"]
     uimmutable = [list(i) for i in toy_mats["uimmutable"]]
     limmutable = [list(i) for i in toy_mats["limmutable"]]
+    # Convert immutables to python lists
+    uimmutable = [(int(x[0]), x[1]) for x in uimmutable]
+    limmutable = [(int(x[0]), x[1]) for x in limmutable]
     return Al, Au, Gl, Gu, S, beta, limmutable, uimmutable
 
 
@@ -78,7 +81,7 @@ def _(mo):
 def _():
     # Hyperparameters mentioned in the supplement
     T = 30001  # Length of simulation
-    N = 10000000  # Population size
+    N = 100000  # Population size
     ms = 0.1  # Mutation scale
     em = 1  # Expected number of mutations per step
     ss = 10  # Simulation scale
@@ -95,6 +98,15 @@ def _(mo):
 
 @app.cell
 def _(Al, Au, Gl, Gu, N, S, T, beta, em, evcm, limmutable, ms, ss, uimmutable):
+    import time
+    from line_profiler import LineProfiler
+    lprofiler = LineProfiler()
+    lprofiler.add_function(evcm.sim.run_sim)
+    lprofiler.add_function(evcm.utils.FBA_gene_container.optimize)
+    lprofiler.add_function(evcm.utils.mutate_bounds)
+    lprofiler_run_sim = lprofiler.wrap_function(evcm.sim.run_sim)
+    # from cProfile import Profile
+    # with Profile() as ps:
     (
         df_flux,
         df_ubounds,
@@ -103,8 +115,9 @@ def _(Al, Au, Gl, Gu, N, S, T, beta, em, evcm, limmutable, ms, ss, uimmutable):
         df_umutation,
         df_lmutation,
         df_neutral,
+        df_selective_coefficients,
         *_,
-    ) = evcm.sim.run_sim(
+    ) = lprofiler_run_sim(
         T=T,
         Au=Au,
         Al=Al,
@@ -118,11 +131,16 @@ def _(Al, Au, Gl, Gu, N, S, T, beta, em, evcm, limmutable, ms, ss, uimmutable):
         expected_mutations=em,
         uimmutable=uimmutable,
         limmutable=limmutable,
-        Reaction_labels=["1", "2", "3", "4"],
-        uGene_labels=["1", "2", "3", "4"],
-        lGene_labels=["1", "2", "3", "4"],
+        fix_start="n"
     )
-    return (df_flux,)
+    # ps.dump_stats("toynget_run_simulation_gurobi_warm.prof")
+    lprofiler.dump_stats(f"profiles/toynet_run_simulation_{str(time.strftime("%a%I-%M-%S"))}.lprof")
+    return df_flux, df_selective_coefficients
+
+
+@app.cell
+def _():
+    return
 
 
 @app.cell(hide_code=True)
@@ -132,6 +150,13 @@ def _(mo):
 
     We can perform some basic analysis on the the simulation results.
     """)
+    return
+
+
+@app.cell
+def _(df_selective_coefficients, plt, sns):
+    select_ax = sns.histplot(data=df_selective_coefficients, x="selective_coefficient", bins=20,)
+    plt.show()
     return
 
 
@@ -226,6 +251,11 @@ def _(
     ss,
     uimmutable,
 ):
+    # from line_profiler import LineProfiler
+    # lprofiler = LineProfiler()
+    # lprofiler.add_function(evcm.sim.run_sim)
+    # lp_wrapped_run_sim = lprofiler(evcm.sim.run_sim)
+
     (
         df_flux_5gene,
         df_ubounds_5gene,
@@ -253,6 +283,7 @@ def _(
         uGene_labels=["1", "2a", "2b", "2c", "2d", "2e", "3", "4"],
         lGene_labels=["1", "2a", "2b", "2c", "2d", "2e", "3", "4"],
     )
+    # lprofiler.dump_stats("toynet_run_simulation.lprof")
     return (df_flux_5gene,)
 
 
