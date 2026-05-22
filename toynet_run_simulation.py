@@ -131,7 +131,8 @@ def _(Al, Au, Gl, Gu, N, S, T, beta, em, evcm, limmutable, ms, ss, uimmutable):
         expected_mutations=em,
         uimmutable=uimmutable,
         limmutable=limmutable,
-        fix_start="n"
+        fix_start="n",
+        fixation_function = "accept iff s>=0"
     )
     # ps.dump_stats("toynget_run_simulation_gurobi_warm.prof")
     lprofiler.dump_stats(f"profiles/toynet_run_simulation_{str(time.strftime("%a%I-%M-%S"))}.lprof")

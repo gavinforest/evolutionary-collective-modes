@@ -79,6 +79,7 @@ def run_sim(
     l_g0=None,
     v0=None,
     mutation_data="c",
+    fixation_function="kimura",
 ):
 
     # T: int of number of epochs to simulate
@@ -304,9 +305,21 @@ def run_sim(
     mutate_prob = expected_mutations / (Gu.shape[1] + Gl.shape[1])
     wiggle_prob = expected_wiggles / S.shape[1]
 
+    # FBA and mutation setup
     FBA_container = FBA_gene_container(Au, Al, S, Gu, Gl, beta)
     Sigmau_cholesky = np.linalg.cholesky(Sigmau)
     Sigmal_cholesky = np.linalg.cholesky(Sigmal)
+
+    # Fixation probability function
+    match fixation_function:
+        case "kimura":
+            fixation_probability_function = random_fixation
+        case "accept iff s>0":
+            fixation_probability_function = lambda s_, _: 1 if s_ > 0 else 0
+        case "accept iff s>=0":
+            fixation_probability_function = lambda s_, _: 1 if s_ >= 0 else 0
+        case _:
+            raise KeyError(f"Unknown fitness function")
 
     # %% Run simlation
     for t in range(T):
@@ -339,7 +352,7 @@ def run_sim(
 
         new_biomass = fitness(new_flux, new_u_g, new_l_g)
         selective_coeff = new_biomass - biomass
-        prob_fix = random_fixation(selective_coeff, pop_size)
+        prob_fix = fixation_probability_function(selective_coeff, pop_size)
 
         df_selective_coefficients["Time"].append(T)
         df_selective_coefficients["selective_coefficient"].append(selective_coeff)
