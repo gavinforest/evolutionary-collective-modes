@@ -44,29 +44,8 @@ def _():
 def _(mo):
     mo.md(r"""
     # Run simulation of toy network
-
-    The matrices for the original toy network are saved as a .npz file in the networks folder. $a_{max}$ is infinite for all bounds, so uimmutable and limmutable are empty lists.
     """)
     return
-
-
-@app.cell
-def _(np):
-    toy_directory = "./networks/toynet.npz"
-
-    toy_mats = np.load(toy_directory)
-    S = toy_mats["S"]
-    beta = toy_mats["beta"]
-    Au = toy_mats["Au"]
-    Al = toy_mats["Al"]
-    Gu = toy_mats["Gu"]
-    Gl = toy_mats["Gl"]
-    uimmutable = [list(i) for i in toy_mats["uimmutable"]]
-    limmutable = [list(i) for i in toy_mats["limmutable"]]
-    # Convert immutables to python lists
-    uimmutable = [(int(x[0]), x[1]) for x in uimmutable]
-    limmutable = [(int(x[0]), x[1]) for x in limmutable]
-    return Al, Au, Gl, Gu, S, beta, limmutable, uimmutable
 
 
 @app.cell(hide_code=True)
@@ -80,12 +59,53 @@ def _(mo):
 @app.cell
 def _():
     # Hyperparameters mentioned in the supplement
-    T = 150001  # Length of simulation
-    N = 100000  # Population size
-    ms = 0.1  # Mutation scale
+    T = int(5e5 + 1)  # Length of simulation
+    N = int(1e7)  # Population size
+    ms = 0.01  # Mutation scale
     em = 1  # Expected number of mutations per step
-    ss = 10  # Simulation scale
-    return N, T, em, ms, ss
+    ss = 10000  # Simulation scale
+    bs = 1000
+    expected_wiggles = 1
+    heritability_std = 0.01
+    sample_rate = 1000
+    return (
+        N,
+        T,
+        bs,
+        em,
+        expected_wiggles,
+        heritability_std,
+        ms,
+        sample_rate,
+        ss,
+    )
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    The matrices for the original toy network are saved as a .npz file in the networks folder. $a_{max}$ is infinite for all bounds, so uimmutable and limmutable are empty lists.
+    """)
+    return
+
+
+@app.cell
+def _(bs, np):
+    toy_directory = "./networks/e_coli_core_mats.npz"
+
+    toy_mats = np.load(toy_directory)
+    S = toy_mats["S"]
+    beta = toy_mats["beta"]
+    Au = toy_mats["Au"]
+    Al = toy_mats["Al"]
+    Gu = toy_mats["Gu"]
+    Gl = toy_mats["Gl"]
+    uimmutable = [list(i) for i in toy_mats["uimmutable"]]
+    limmutable = [list(i) for i in toy_mats["limmutable"]]
+    # Convert immutables to python lists
+    uimmutable = [(int(x[0]), x[1]*bs) for x in uimmutable]
+    limmutable = [(int(x[0]), x[1] * bs) for x in limmutable]
+    return Al, Au, Gl, Gu, S, beta, limmutable, uimmutable
 
 
 @app.cell(hide_code=True)
@@ -97,7 +117,25 @@ def _(mo):
 
 
 @app.cell
-def _(Al, Au, Gl, Gu, N, S, T, beta, em, evcm, limmutable, ms, ss, uimmutable):
+def _(
+    Al,
+    Au,
+    Gl,
+    Gu,
+    N,
+    S,
+    T,
+    beta,
+    em,
+    evcm,
+    expected_wiggles,
+    heritability_std,
+    limmutable,
+    ms,
+    sample_rate,
+    ss,
+    uimmutable,
+):
     import time
     from line_profiler import LineProfiler
     lprofiler = LineProfiler()
@@ -131,15 +169,20 @@ def _(Al, Au, Gl, Gu, N, S, T, beta, em, evcm, limmutable, ms, ss, uimmutable):
         expected_mutations=em,
         uimmutable=uimmutable,
         limmutable=limmutable,
-        fix_start="n"
+        fix_start="n",
+        expected_wiggles=expected_wiggles,
+        heritability_std=heritability_std,
+        sample_rate=sample_rate
     )
     # ps.dump_stats("toynget_run_simulation_gurobi_warm.prof")
-    lprofiler.dump_stats(f"profiles/toynet_run_simulation_{str(time.strftime("%a%I-%M-%S"))}.lprof")
-    return df_flux, df_selective_coefficients
+    profile_file_path = f"profiles/toynet_run_simulation_{str(time.strftime("%a%I-%M-%S"))}.lprof"
+    lprofiler.dump_stats(profile_file_path)
+    return df_flux, df_selective_coefficients, profile_file_path
 
 
 @app.cell
-def _():
+def _(profile_file_path):
+    profile_file_path
     return
 
 
@@ -154,8 +197,17 @@ def _(mo):
 
 
 @app.cell
-def _(df_selective_coefficients, plt, sns):
-    select_ax = sns.histplot(data=df_selective_coefficients, x="selective_coefficient", bins=20,)
+def _(N, df_selective_coefficients, np, plt, sns):
+    def random_fixation(s, pop_size):
+        # using frequency of mutant as 1/pop_size
+        prob_fix = np.zeros_like(s)
+        mask_0 = s == 0
+        prob_fix[~mask_0] = (1 - np.exp(-2 * s[~mask_0])) / (1 - np.exp(-2 * pop_size * s[~mask_0]))
+        prob_fix[mask_0] = 1 / pop_size
+        return prob_fix
+
+    select_ax = sns.histplot(data=df_selective_coefficients[df_selective_coefficients["selective_coefficient"] > 0], x="selective_coefficient", bins=20,stat="probability")
+    plt.plot(np.linspace(0, 2, 100), random_fixation(np.linspace(0, 2, 100), N))
     plt.show()
     return
 
