@@ -461,7 +461,10 @@ class FBA_gene_container:
         self.fba_model = gb.Model("FBA", env=gurobi_env)
 
         # Unchanging structure and constants of the problem
-        self.v = self.fba_model.addMVar(shape=S.shape[1], name="v")
+        self.v = self.fba_model.addMVar(
+            shape=S.shape[1], name="v", lb=0 if self.irreversible else -GRB.INFINITY
+        )  # gurobi defaults to setting variable lower bounds, need to unconstrain here
+        #   then constrain later.
         self.stoich_constr = self.fba_model.addMConstr(
             S, self.v, GRB.EQUAL, np.zeros((S.shape[0],)), name="stoich"
         )
@@ -484,10 +487,7 @@ class FBA_gene_container:
 
         self.fba_model.optimize()
 
-        obj_value = self.fba_model.ObjVal
-
-        if obj_value is None:
-
+        if self.fba_model.Status != GRB.OPTIMAL:
             if self.return_lagrange:
                 return (
                     0,
@@ -499,7 +499,7 @@ class FBA_gene_container:
             else:
                 return 0, np.zeros(self.S.shape[1])
         else:
-
+            obj_value = self.fba_model.ObjVal
             if self.return_lagrange:
                 return (
                     obj_value,
@@ -509,62 +509,7 @@ class FBA_gene_container:
                     self.v_lower_constr.Pi,
                 )
             else:
-                return -obj_value, self.v.X
-
-
-def FBA_gene_gurobi(
-    u_g, l_g, Au, Al, S, Gu, Gl, beta, return_lagrange=False, irreversible=False
-):
-    av_upper = Gu @ u_g
-    av_lower = Gl @ l_g
-
-    fba_model = gb.Model("FBA", env=gurobi_env)
-    v = fba_model.addMVar(shape=S.shape[1], name="v")
-    fba_model.addMConstr(S, v, GRB.EQUAL, np.zeros((S.shape[0],)), name="stoich")
-    fba_model.addMConstr(Au, v, GRB.LESS_EQUAL, av_upper, name="v_upper")
-    fba_model.addMConstr(Al, v, GRB.GREATER_EQUAL, av_lower, name="v_lower")
-    fba_model.setMObjective(None, beta, 0.0, None, None, v, GRB.MAXIMIZE)
-
-    fba_model.optimize()
-
-    obj_value = fba_model.ObjVal
-
-    # v = cp.Variable(S.shape[1])
-    # objective = cp.Minimize(-beta @ v)
-    # constraints = [S @ v == 0, Au @ v <= Gu @ u_g, Al @ v >= Gl @ l_g]
-    # if irreversible:
-    #     constraints += [v >= 0]
-    # prob = cp.Problem(objective, constraints)
-
-    # try:
-    #     result = prob.solve(solver=solver, warm_start=True)
-    # except:
-    #     pass
-
-    if obj_value is None:
-
-        if return_lagrange:
-            return (
-                0,
-                np.zeros(S.shape[1]),
-                np.zeros(S.shape[0]),
-                np.zeros(Au.shape[0]),
-                np.zeros(Al.shape[0]),
-            )
-        else:
-            return 0, np.zeros(S.shape[1])
-    else:
-
-        if return_lagrange:
-            return (
-                obj_value,
-                v.X,
-                fba_model.getConstrByName("stoich").Pi,
-                fba_model.getConstrByName("v_upper").Pi,
-                fba_model.getConstrByName("v_lower").Pi,
-            )
-        else:
-            return -obj_value, v.X
+                return obj_value, self.v.X
 
 
 def FBA_gene(
@@ -578,7 +523,7 @@ def FBA_gene(
     beta,
     return_lagrange=False,
     irreversible=False,
-    solver="GUROBI",
+    solver="SCIPY",
 ):
     v = cp.Variable(S.shape[1])
     objective = cp.Minimize(-beta @ v)

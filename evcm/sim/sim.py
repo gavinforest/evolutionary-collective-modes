@@ -14,6 +14,7 @@ from evcm.utils import (
     selective_pressure_FBA_flux,
     selective_pressure_FBA_gene,
     biological_start,
+    FBA_gene,
 )
 import warnings
 

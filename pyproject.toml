@@ -20,6 +20,7 @@ dependencies = [
   "cobra",
   "marimo",
   "gurobipy>=13.0.1",
+  "gurobi-modelanalyzer>=2.1.0",
 ]
 
 [dependency-groups]

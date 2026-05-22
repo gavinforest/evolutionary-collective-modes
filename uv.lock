@@ -503,6 +503,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "cobra" },
     { name = "cvxpy" },
+    { name = "gurobi-modelanalyzer" },
     { name = "gurobipy" },
     { name = "jupyterlab" },
     { name = "marimo" },
@@ -531,6 +532,7 @@ dev = [
 requires-dist = [
     { name = "cobra" },
     { name = "cvxpy" },
+    { name = "gurobi-modelanalyzer", specifier = ">=2.1.0" },
     { name = "gurobipy", specifier = ">=13.0.1" },
     { name = "jupyterlab" },
     { name = "marimo" },
@@ -622,6 +624,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a7/b2/4140c69c6a66432916b26158687e821ba631a4c9273c474343badf84d3ba/future-1.0.0.tar.gz", hash = "sha256:bd2968309307861edae1458a4f8a4f3598c03be43b97521076aebf5d94c07b05", size = 1228490, upload-time = "2024-02-21T11:52:38.461Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/da/71/ae30dadffc90b9006d77af76b393cb9dfbfc9629f339fc1574a1c52e6806/future-1.0.0-py3-none-any.whl", hash = "sha256:929292d34f5872e70396626ef385ec22355a1fae8ad29e1a734c3e43f9fbc216", size = 491326, upload-time = "2024-02-21T11:52:35.956Z" },
+]
+
+[[package]]
+name = "gurobi-modelanalyzer"
+version = "2.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "gurobipy" },
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/6f/31/5c3ff559008969f8884d51d0a7f748221454597af8bec5ad9876a94fbe61/gurobi_modelanalyzer-2.1.0.tar.gz", hash = "sha256:6cbf564be36120a2ad5d9a4c658a143a90513ae4b20cebb52b9ab5e079fce8fc", size = 2830453, upload-time = "2024-11-12T13:27:33.363Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/84/f5/3489ecd4ae4bdfc3b16a9d2d4122a4ba792cfe8fa145a46e146d4b3231de/gurobi_modelanalyzer-2.1.0-py3-none-any.whl", hash = "sha256:cc6754a545953a727dd6897eafcb6a48c678fd3d87f4f1661cb777e556b876d4", size = 44341, upload-time = "2024-11-12T13:27:32.244Z" },
 ]
 
 [[package]]
@@ -1215,7 +1230,7 @@ wheels = [
 
 [[package]]
 name = "marimo"
-version = "0.23.4"
+version = "0.23.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -1230,6 +1245,7 @@ dependencies = [
     { name = "psutil" },
     { name = "pygments" },
     { name = "pymdown-extensions" },
+    { name = "python-multipart" },
     { name = "pyyaml" },
     { name = "pyzmq", marker = "python_full_version < '3.15'" },
     { name = "starlette" },
@@ -1237,9 +1253,9 @@ dependencies = [
     { name = "uvicorn" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/99/1a/79f8fc2af1be74283ba3b701cba77472ec4f30949ffa88a3166d4bb7e751/marimo-0.23.4.tar.gz", hash = "sha256:8e5f1bd78a73cb04d775e650473cfab745303be746f141a3654dcd246de2a4e6", size = 38403567, upload-time = "2026-04-28T18:01:51.14Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f2/fe/a1dec6111a660ee3bd26521c24788e7aef519a31c60cf37f767f29313454/marimo-0.23.8.tar.gz", hash = "sha256:8049df4ad263e7126e959d7d910b014e6181dffe49f540a89c3174e61a446a99", size = 38505767, upload-time = "2026-05-22T16:24:19.881Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8f/13/c1c3d0f889115ad33e2122efd16c842f8588aab7e0d243f29125a0ee8ad5/marimo-0.23.4-py3-none-any.whl", hash = "sha256:67806cf1dc4f438624e4640debf80e0689173399b8ee17de7f879cb07f6fb476", size = 38824790, upload-time = "2026-04-28T18:01:47.909Z" },
+    { url = "https://files.pythonhosted.org/packages/2d/76/51b57a2e521b9110f25ec935f2774412e2f3d678b3fdea7841987244fb2c/marimo-0.23.8-py3-none-any.whl", hash = "sha256:99a4035d035fb320c8f2dcefc2213e0d64e9de13e989bc3f2a973b19dc40542a", size = 38938839, upload-time = "2026-05-22T16:24:16.102Z" },
 ]
 
 [[package]]
@@ -2078,6 +2094,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/f2/5f/32ae50a5464314e5e2b6d10cac439d94fabe882963a2eca57bd965694f9a/python_libsbml-5.21.1-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:b56f1d0a20b8768f7318043019a02d6582ef58a355521bef32c9f28f4c1d8619", size = 8039270, upload-time = "2026-03-09T13:13:35.561Z" },
     { url = "https://files.pythonhosted.org/packages/21/52/5960736a6e89449a119fb6cb17675356ae81ce5b0ac94eac92408944c811/python_libsbml-5.21.1-cp314-cp314-win_amd64.whl", hash = "sha256:7b2f0618889d0995630602ca23407ff9fa879fc78c5e119d04164d0d6f65df77", size = 6080260, upload-time = "2026-03-09T13:13:37.205Z" },
     { url = "https://files.pythonhosted.org/packages/e7/05/76eb10a1436e3c4b11ddab53ebbc94474047a1e9c96f424d01c299fe8a31/python_libsbml-5.21.1-cp314-cp314-win_arm64.whl", hash = "sha256:4bd70514282d48502c52b95eb2e31f99ed0f8732f3eb9a733d7f0fcfffe70f47", size = 5780207, upload-time = "2026-03-09T13:13:38.7Z" },
+]
+
+[[package]]
+name = "python-multipart"
+version = "0.0.29"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/4e/fe/70bd71a6738b09a0bdf6480ca6436b167469ca4578b2a0efbe390b4b0e70/python_multipart-0.0.29.tar.gz", hash = "sha256:643e93849196645e2dbdd81a0f8829a23123ad7f797a84a364c6fb3563f18904", size = 45678, upload-time = "2026-05-17T17:29:47.654Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8f/cb/769cfc37177252872a45a71f3fbdde9d51b471a3f3c14bfe95dde3407386/python_multipart-0.0.29-py3-none-any.whl", hash = "sha256:2ddcc971cef266225f54f552d8fa10bcfbb1f14446caec199060daac59ff2d69", size = 29640, upload-time = "2026-05-17T17:29:45.69Z" },
 ]
 
 [[package]]
